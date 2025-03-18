@@ -9,6 +9,11 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "express": "^4.21.2"
+    "axios": "^1.7.9",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "pg": "^8.14.0",
+    "ws": "^8.18.1",
+    "yahoo-finance2": "^2.13.3"
   }
 }
