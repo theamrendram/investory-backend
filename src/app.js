@@ -9,10 +9,10 @@ const app = express();
 // Middleware for parsing JSON
 app.use(express.json());
 
-const stockRoutes = require("./routes/stocks.route");
+// const stockRoutes = require("./routes/stocks.route");
 const userRoutes = require("./routes/user.route");
 // Routes
-app.use("/api/stocks", stockRoutes);
+// app.use("/api/stocks", stockRoutes);
 app.use("/api/users", userRoutes);
 
 // Error handling middleware
