@@ -1,12 +1,14 @@
 const pg = require("pg");
 const { Pool } = pg;
 
-console.log(
-  process.env.DB_USER,
-  process.env.DB_HOST,
-  process.env.DB_DATABASE,
-  process.env.DB_PASSWORD
-);
+// Validate environment variables
+const requiredEnvVars = ["DB_USER", "DB_HOST", "DB_DATABASE", "DB_PASSWORD"];
+requiredEnvVars.forEach((key) => {
+  if (!process.env[key]) {
+    console.error(`Missing required environment variable: ${key}`);
+    process.exit(1); // Exit the application if any variable is missing
+  }
+});
 
 const pool = new Pool({
   user: process.env.DB_USER,
@@ -18,14 +20,14 @@ const pool = new Pool({
   },
 });
 
-const connectDB = () => {
-  pool.connect((err) => {
-    if (err) {
-      console.error("Error connecting to the database:", err);
-    } else {
-      
-      console.log("Connected to the database...");
-    }
-  });
-};
-module.exports = connectDB;
+// Test the database connection
+pool.connect((err, client, release) => {
+  if (err) {
+    console.error("Error connecting to the database:", err);
+  } else {
+    console.log("Connected to the database...");
+    release(); // Release the client back to the pool
+  }
+});
+
+module.exports = pool;
