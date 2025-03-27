@@ -2,16 +2,25 @@ const pool = require("../utils/db");
 
 // Function to add a user
 const addUser = async (req, res) => {
-  const { name, email, phone } = req.body;
-  console.log("name", name);
+  const { name, email, phone, firebase_id } = req.body;
+  console.log("body", req.body);
   const query = `
-    INSERT INTO users (name, email, phone)
-    VALUES ($1, $2, $3)
+    INSERT INTO users (name, email, phone, firebase_id)
+    VALUES ($1, $2, $3, $4)
     RETURNING *;
   `;
 
   try {
-    const result = await pool.query(query, [name, email, phone]);
+    const user = await pool.query(
+      "SELECT * FROM users WHERE firebase_id = $1",
+      [firebase_id]
+    );
+    if (user.rows.length > 0) {
+      const userData = user.rows[0];
+      return res.status(200).json(userData);
+    }
+
+    const result = await pool.query(query, [name, email, phone, firebase_id]);
     res.status(201).json(result.rows[0]);
   } catch (error) {
     console.error("Error adding user:", error);
@@ -67,4 +76,4 @@ module.exports = {
   createUsersTable,
 };
 
-createUsersTable();
+// createUsersTable();
