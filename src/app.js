@@ -4,18 +4,18 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 
-// connectDB();
-
 // Middleware for parsing JSON
 app.use(express.json());
 app.use(cors());
 
-// const stockRoutes = require("./routes/stocks.route");
 const userRoutes = require("./routes/user.route");
+const marketRoute = require("./routes/market.route");
+const authRoute = require("./routes/auth.route");
 // Routes
-// app.use("/api/stocks", stockRoutes);
-app.use("/api/users", userRoutes);
 
+app.use("/api/users", userRoutes);
+app.use("/api/market", marketRoute);
+app.use("/api/auth", authRoute);
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
@@ -23,5 +23,3 @@ app.use((err, req, res, next) => {
 });
 
 module.exports = app;
-
-// http://localhost:8000/callback?code=ldNPsz
