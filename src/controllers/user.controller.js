@@ -3,7 +3,6 @@ const pool = require("../utils/db");
 // Function to add a user
 const addUser = async (req, res) => {
   const { name, email, phone, firebase_id } = req.body;
-  console.log("body", req.body);
   const query = `
     INSERT INTO users (name, email, phone, firebase_id)
     VALUES ($1, $2, $3, $4)
@@ -21,7 +20,12 @@ const addUser = async (req, res) => {
     }
 
     const result = await pool.query(query, [name, email, phone, firebase_id]);
-    res.status(201).json(result.rows[0]);
+    if (result.rows.length === 0) {
+      return res.status(500).json({ error: "Failed to create user" });
+    }
+    const userData = result.rows[0];
+    console.log("User created:", userData);
+    res.status(201).json(userData);
   } catch (error) {
     console.error("Error adding user:", error);
     res.status(500).json({ error: error.message });
@@ -75,5 +79,3 @@ module.exports = {
   getUser,
   createUsersTable,
 };
-
-// createUsersTable();

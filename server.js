@@ -1,26 +1,20 @@
+// server.js
+const http = require("http");
 const app = require("./src/app");
+const { setupRealtimeFeed } = require("./src/services/websocket_client");
 
-const axios = require("axios");
+const server = http.createServer(app);
 
-// function getLogin(){
+setupRealtimeFeed(server)
+  .then((io) => {
+    app.set("io", io); // Optional: if you need to use `io` in routes
+  })
+  .catch((err) => {
+    console.error("Realtime feed failed:", err);
+  });
 
-//   let config = {
-//     method: "get",
-//     maxBodyLength: Infinity,
-//     url: "https://api.upstox.com/v2/login/authorization/dialog?client_id=e3c447c9-db1b-4533-9976-afdf411503d6&redirect_uri=https://localhost:3000",
-//     headers: {},
-//   };
 
-//   axios(config)
-//     .then((response) => {
-//       console.log(JSON.stringify(response.data));
-//     })
-//     .catch((error) => {
-//       console.log(error);
-//     });
-// }
-// getLogin()
-const port = process.env.PORT || 8000;
-app.listen(port, () => {
-  console.log(`server is running on port ${port}`);
+const PORT = process.env.PORT || 8000;
+server.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
