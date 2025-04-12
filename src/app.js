@@ -12,12 +12,14 @@ const userRoutes = require("./routes/user.route");
 const marketRoute = require("./routes/market.route");
 const authRoute = require("./routes/auth.route");
 const broadcastRoute = require("./routes/broadcast.route")
+const assistantRoute = require("./routes/assistant.route");
 // Routes
 
 app.use("/api/users", userRoutes);
 app.use("/api/market", marketRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/broadcast", broadcastRoute);
+app.use("/api/assistant", assistantRoute);
 
 app.get("/", (req, res) => {
   res.send("Welcome to the Server!");
