@@ -1,25 +1,5 @@
 const pool = require("../utils/db");
-const { GoogleGenAI } = require("@google/genai");
-
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-
-const generate = async (message) => {
-  if (!message) {
-    throw new Error("Message is required");
-  }
-  try {
-    const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash",
-      contents: message,
-    });
-    console.log(response.text);
-    return response;
-  } catch (error) {
-    console.error("Error generating response:", error);
-    throw error;
-  }
-};
-
+const { generate } = require("../services/assistant");
 const fetchPreviousMessage = async () => {
   //   const query = `
   //     SELECT message_id, message, role, created_at
