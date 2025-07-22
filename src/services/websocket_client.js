@@ -65,7 +65,6 @@ const setupRealtimeFeed = async (server) => {
   upstoxWs.on("message", (data) => {
     const decoded = decodeProtobuf(data);
     if (decoded) {
-      // ✅ Automatically broadcast to frontend
       io.emit("marketData", decoded);
     }
   });
