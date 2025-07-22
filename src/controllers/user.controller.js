@@ -1,6 +1,5 @@
 const pool = require("../utils/db");
 
-
 // Function to create the users table
 const createUsersTable = async () => {
   const query = `
@@ -25,24 +24,24 @@ const createUsersTable = async () => {
 
 // Function to add a user
 const addUser = async (req, res) => {
-  const { name, email, phone, firebase_id } = req.body;
+  const { name, email, phone, firebase_uid } = req.body;
   const query = `
-    INSERT INTO users (name, email, phone, firebase_id)
+    INSERT INTO users (name, email, phone, firebase_uid)
     VALUES ($1, $2, $3, $4)
     RETURNING *;
   `;
 
   try {
     const user = await pool.query(
-      "SELECT * FROM users WHERE firebase_id = $1",
-      [firebase_id]
+      "SELECT * FROM users WHERE firebase_uid = $1",
+      [firebase_uid]
     );
     if (user.rows.length > 0) {
       const userData = user.rows[0];
       return res.status(200).json(userData);
     }
 
-    const result = await pool.query(query, [name, email, phone, firebase_id]);
+    const result = await pool.query(query, [name, email, phone, firebase_uid]);
     if (result.rows.length === 0) {
       return res.status(500).json({ error: "Failed to create user" });
     }
@@ -59,10 +58,10 @@ const addUser = async (req, res) => {
 const getUser = async (req, res) => {
   const { id } = req.params;
   console.log("dsadsa");
-  
+
   const r = await createUsersTable();
   console.log("r", r);
-  
+
   const query = `
     SELECT * FROM users WHERE id = $1;
   `;
@@ -78,7 +77,6 @@ const getUser = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
 
 // Export the functions
 module.exports = {

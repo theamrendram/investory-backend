@@ -1,10 +1,13 @@
 const {
   sendResponse,
-  fetchPreviousMessages, // ✅ Corrected name
+  fetchPreviousMessages,
+  createConversationsTable,
 } = require("../controllers/conversation.controller");
 
 const express = require("express");
 const router = express.Router();
+
+createConversationsTable();
 
 // POST /api/assistant → Send prompt and get AI response
 router.post("/", sendResponse);

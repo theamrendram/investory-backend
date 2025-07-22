@@ -2,7 +2,7 @@ const pool = require("../utils/db");
 const { generate } = require("../services/assistant");
 const fetchPreviousMessages = async (req, res) => {
   const { session_token } = req.params;
-
+  console.log("session_token", session_token);
   if (!session_token) {
     return res.status(400).json({ error: "Session token is required" });
   }
@@ -27,7 +27,7 @@ const createConversationsTable = async () => {
   const query = `
     CREATE TABLE IF NOT EXISTS conversations (
       id SERIAL PRIMARY KEY,
-      user_id INTEGER REFERENCES users(id),
+      user_id VARCHAR(255) REFERENCES users(firebase_uid),
       session_token VARCHAR(255) NOT NULL,
       prompt TEXT NOT NULL,
       response TEXT NOT NULL,
@@ -45,16 +45,10 @@ const createConversationsTable = async () => {
   }
 };
 
-
 // Save both user message and Gemini's reply to DB
 const sendResponse = async (req, res) => {
-  const {
-    user_id,
-    session_token,
-    messages,
-    stock_context,
-    memory_context
-  } = req.body;
+  const { user_id, session_token, messages, stock_context, memory_context } =
+    req.body;
 
   // Validate messages array
   if (!Array.isArray(messages) || messages.length === 0) {
@@ -89,7 +83,7 @@ const sendResponse = async (req, res) => {
       "session_token",
       userPrompt,
       stock_context || null,
-      memory_context || null
+      memory_context || null,
     ]);
 
     // Step 4: Save Gemini Reply (Response)
@@ -102,7 +96,7 @@ const sendResponse = async (req, res) => {
       "session_token",
       aiReply,
       stock_context || null,
-      memory_context || null
+      memory_context || null,
     ]);
 
     // Step 5: Send Reply Back
@@ -115,8 +109,8 @@ const sendResponse = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
- createConversationsTable();
 module.exports = {
   fetchPreviousMessages,
   sendResponse,
+  createConversationsTable,
 };
