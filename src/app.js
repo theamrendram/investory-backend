@@ -3,6 +3,7 @@ dotenv.config();
 const express = require("express");
 const cors = require("cors");
 const app = express();
+const authHandler = require("./middleware/auth.middleware");
 
 // Middleware for parsing JSON
 app.use(express.json());
@@ -14,6 +15,7 @@ const authRoute = require("./routes/auth.route");
 const broadcastRoute = require("./routes/broadcast.route")
 const assistantRoute = require("./routes/assistant.route");
 const stockRoute = require("./routes/stock.route");
+const progressRoute = require("./routes/progress.route");
 // Routes
 
 app.use("/api/users", userRoutes);
@@ -22,7 +24,7 @@ app.use("api/stocks", stockRoute );
 app.use("/api/auth", authRoute);
 app.use("/api/broadcast", broadcastRoute);
 app.use("/api/assistant", assistantRoute);
-
+// app.use("/api/progress", authHandler, progressRoute);
 app.get("/", (req, res) => {
   res.send("Welcome to the Server!");
 }); 

@@ -3,3 +3,5 @@ node_modules
 .env
 .vercel
 .upstox_token.json
+
+src/utils/firebase/firebase-admin.json
