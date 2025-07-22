@@ -13,7 +13,7 @@ const userRoutes = require("./routes/user.route");
 const marketRoute = require("./routes/market.route");
 const authRoute = require("./routes/auth.route");
 const broadcastRoute = require("./routes/broadcast.route")
-const assistantRoute = require("./routes/assistant.route");
+const conversationRoute = require("./routes/conversation.route");
 const stockRoute = require("./routes/stock.route");
 const progressRoute = require("./routes/progress.route");
 // Routes
@@ -23,12 +23,12 @@ app.use("/api/market", marketRoute);
 app.use("api/stocks", stockRoute );
 app.use("/api/auth", authRoute);
 app.use("/api/broadcast", broadcastRoute);
-app.use("/api/assistant", assistantRoute);
+app.use("/api/conversation", conversationRoute);
 app.use("/api/progress",authHandler, progressRoute);
 app.get("/", (req, res) => {
   res.send("Welcome to the Server!");
 }); 
-
+  
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
