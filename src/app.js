@@ -24,7 +24,7 @@ app.use("api/stocks", stockRoute );
 app.use("/api/auth", authRoute);
 app.use("/api/broadcast", broadcastRoute);
 app.use("/api/assistant", assistantRoute);
-// app.use("/api/progress", authHandler, progressRoute);
+app.use("/api/progress",authHandler, progressRoute);
 app.get("/", (req, res) => {
   res.send("Welcome to the Server!");
 }); 
