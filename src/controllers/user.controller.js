@@ -1,5 +1,28 @@
 const pool = require("../utils/db");
 
+
+// Function to create the users table
+const createUsersTable = async () => {
+  const query = `
+    CREATE TABLE IF NOT EXISTS users (
+      id SERIAL PRIMARY KEY,
+      name VARCHAR(100) NOT NULL,
+      email VARCHAR(100) UNIQUE NOT NULL,
+      phone VARCHAR(20),
+      amount DECIMAL(10, 4) DEFAULT 10000.0000,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `;
+
+  try {
+    await pool.query(query);
+    console.log("Users table created successfully");
+  } catch (error) {
+    console.error("Error creating table:", error);
+  }
+};
+
 // Function to add a user
 const addUser = async (req, res) => {
   const { name, email, phone, firebase_id } = req.body;
@@ -35,6 +58,11 @@ const addUser = async (req, res) => {
 // Function to get a user by ID
 const getUser = async (req, res) => {
   const { id } = req.params;
+  console.log("dsadsa");
+  
+  const r = await createUsersTable();
+  console.log("r", r);
+  
   const query = `
     SELECT * FROM users WHERE id = $1;
   `;
@@ -51,27 +79,6 @@ const getUser = async (req, res) => {
   }
 };
 
-// Function to create the users table
-const createUsersTable = async () => {
-  const query = `
-    CREATE TABLE IF NOT EXISTS users (
-      id SERIAL PRIMARY KEY,
-      name VARCHAR(100) NOT NULL,
-      email VARCHAR(100) UNIQUE NOT NULL,
-      phone VARCHAR(20),
-      amount DECIMAL(10, 4) DEFAULT 10000.0000,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
-  `;
-
-  try {
-    await pool.query(query);
-    console.log("Users table created successfully");
-  } catch (error) {
-    console.error("Error creating table:", error);
-  }
-};
 
 // Export the functions
 module.exports = {

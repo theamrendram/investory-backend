@@ -3,24 +3,24 @@ const pool = require("../utils/db");
 
 const createStockTables = async () => {
   const createQuery = `
-Create table if not exists stocks (
-    id serial primary key,
-    stock_name varchar(50) not null,
-    stock_id integer not null references stocks(id) on delete cascade,
-    period_start Date not null,
-    period_end Date not null,
-    fiscal_year decimal(5,2),
-    fiscal_half decimal(5,2),
-    exchange varchar(50),
-    current_price decimal(10,2),
-    marketcap decimal(10,2),
-    roe decimal(5,2),
-    52_week_high decimal(10,2),
-    52_week_low decimal(10,2),
-    pe_ratio decimal(10,2),
-    dividend_yield decimal(10,2)
-    updated at timestamp default current_timestamp
-);`;
+  Create table if not exists stocks (
+      id serial primary key,
+      stock_name varchar(50) not null,  
+      period_start Date not null,
+      period_end Date not null,
+      fiscal_year decimal(5,2),
+      fiscal_half decimal(5,2),
+      exchange varchar(50),
+      current_price decimal(10,2),
+      marketcap decimal(10,2),
+      roe decimal(5,2),
+      high_week_52 decimal(10,2),
+      low_week_52 decimal(10,2),
+      pe_ratio decimal(10,2),
+      dividend_yield decimal(10,2),
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+  );`;
 
   try {
     await pool.query(createQuery);
@@ -49,20 +49,20 @@ const addStock = async (req, res) => {
 
   const existingStockQuery = ` select * from stocks where stock_name = $1;`;
   const insertStockQuery = ` INSERT INTO stocks (
-        stock_name,
-        period_start,
-        period_end,
-        fiscal_year,
-        fiscal_half,
-        exchange,
-        current_price,
-        marketcap,
-        roe,
-        high_52_week,
-        low_52_week,
-        pe_ratio,
-        dividend_yield
-    ) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13) returning *; `;
+          stock_name,
+          period_start,
+          period_end,
+          fiscal_year,
+          fiscal_half,
+          exchange,
+          current_price,
+          marketcap,
+          roe,
+          high_52_week,
+          low_52_week,
+          pe_ratio,
+          dividend_yield
+      ) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13) returning *; `;
 
   try {
     const existingStock = await pool.query(existingStockQuery, [stock_name]);
@@ -103,6 +103,8 @@ const addStock = async (req, res) => {
 
 const getAllStock = async (req, res) => {
   const query = ` select * from stocks;`;
+  const r = await createStockTables();
+  console.log("r", r);
   try {
     const result = await pool.query(query);
     res.status(200).json(result.rows);
@@ -143,6 +145,8 @@ const getStockByInstrumentId = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+createStockTables();
 
 module.exports = {
   addStock,

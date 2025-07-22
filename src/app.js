@@ -13,10 +13,12 @@ const marketRoute = require("./routes/market.route");
 const authRoute = require("./routes/auth.route");
 const broadcastRoute = require("./routes/broadcast.route")
 const assistantRoute = require("./routes/assistant.route");
+const stockRoute = require("./routes/stock.route");
 // Routes
 
 app.use("/api/users", userRoutes);
 app.use("/api/market", marketRoute);
+app.use("api/stocks", stockRoute );
 app.use("/api/auth", authRoute);
 app.use("/api/broadcast", broadcastRoute);
 app.use("/api/assistant", assistantRoute);
