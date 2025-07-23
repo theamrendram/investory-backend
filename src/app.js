@@ -16,6 +16,7 @@ const broadcastRoute = require("./routes/broadcast.route")
 const conversationRoute = require("./routes/conversation.route");
 const stockRoute = require("./routes/stock.route");
 const progressRoute = require("./routes/progress.route");
+const watchlistRoute = require("./routes/watchlist.route");
 // Routes
 
 app.use("/api/users", userRoutes);
@@ -25,6 +26,7 @@ app.use("/api/auth", authRoute);
 app.use("/api/broadcast", broadcastRoute);
 app.use("/api/conversation", conversationRoute);
 app.use("/api/progress",authHandler, progressRoute);
+app.use("/api/watchlist", watchlistRoute);
 app.get("/", (req, res) => {
   res.send("Welcome to the Server!");
 }); 
