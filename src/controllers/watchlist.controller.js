@@ -23,7 +23,6 @@ const createWatchlistTable = async () => {
 
 const addToWatchlist = async (req, res) => {
   const { user_id, stock_name, exchange, target_price } = req.body;
-  createWatchlistTable();
   try {
     const query = `
       INSERT INTO watchlist (user_id, stock_name, exchange, target_price)
@@ -49,11 +48,10 @@ const addToWatchlist = async (req, res) => {
 };
 
 const getUserWatchlist = async (req, res) => {
-  const { user_id } = req.params;
-
+  const { userId } = req.params;
   try {
     const query = `SELECT * FROM watchlist WHERE user_id = $1 ORDER BY added_at DESC`;
-    const result = await pool.query(query, [user_id]);
+    const result = await pool.query(query, [userId]);
     res.status(200).json(result.rows);
   } catch (error) {
     console.error("Error fetching watchlist:", error.message);
