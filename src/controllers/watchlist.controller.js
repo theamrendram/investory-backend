@@ -1,4 +1,5 @@
 const pool = require("../utils/db");
+const { successResponse, errorResponse } = require("../utils/response");
 
 const createWatchlistTable = async () => {
   const query = `
@@ -40,10 +41,10 @@ const addToWatchlist = async (req, res) => {
       target_price,
     ]);
 
-    res.status(200).json({ message: "Added/Updated watchlist", data: result.rows[0] });
+    res.status(200).json(successResponse(res, result.rows[0], "Added/Updated watchlist"));
   } catch (error) {
     console.error("Error adding to watchlist:", error.message);
-    res.status(500).json({ error: error.message });
+    res.status(500).json(errorResponse(res, error.message, 500));
   }
 };
 
@@ -52,10 +53,10 @@ const getUserWatchlist = async (req, res) => {
   try {
     const query = `SELECT * FROM watchlist WHERE user_id = $1 ORDER BY added_at DESC`;
     const result = await pool.query(query, [userId]);
-    res.status(200).json(result.rows);
+    res.status(200).json(successResponse(res, result.rows, "Watchlist fetched successfully"));
   } catch (error) {
     console.error("Error fetching watchlist:", error.message);
-    res.status(500).json({ error: error.message });
+    res.status(500).json(errorResponse(res, error.message, 500));
   }
 };
 
@@ -67,13 +68,13 @@ const removeFromWatchlist = async (req, res) => {
     const result = await pool.query(query, [user_id, stock_name]);
 
     if (result.rowCount === 0) {
-      return res.status(404).json({ error: "Stock not found in watchlist" });
+      return res.status(404).json(errorResponse(res, "Stock not found in watchlist", 404));
     }
 
-    res.status(200).json({ message: "Removed from watchlist", data: result.rows[0] });
+    res.status(200).json(successResponse(res, result.rows[0], "Removed from watchlist"));
   } catch (error) {
     console.error("Error removing from watchlist:", error.message);
-    res.status(500).json({ error: error.message });
+    res.status(500).json(errorResponse(res, error.message, 500));
   }
 };
 

@@ -1,4 +1,5 @@
 const pool = require("../utils/db");
+const { successResponse, errorResponse } = require("../utils/response");
 
 // Function to create the users table
 const createUsersTable = async () => {
@@ -38,19 +39,21 @@ const addUser = async (req, res) => {
     );
     if (user.rows.length > 0) {
       const userData = user.rows[0];
-      return res.status(200).json(userData);
+      return res.status(200).json(successResponse(res, userData, "User already exists"));
     }
 
     const result = await pool.query(query, [name, email, phone, firebase_uid]);
     if (result.rows.length === 0) {
-      return res.status(500).json({ error: "Failed to create user" });
+      return res.status(500).json(errorResponse(res, "Failed to create user", 500));
     }
     const userData = result.rows[0];
     console.log("User created:", userData);
-    res.status(201).json(userData);
+    res.status(201).json(
+      successResponse(res, userData, "User created successfully")
+    );
   } catch (error) {
     console.error("Error adding user:", error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json(errorResponse(res, error.message, 500));
   }
 };
 
@@ -69,12 +72,12 @@ const getUser = async (req, res) => {
   try {
     const result = await pool.query(query, [id]);
     if (result.rows.length === 0) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json(errorResponse(res, "User not found", 404));
     }
-    res.status(200).json(result.rows[0]);
+    res.status(200).json(successResponse(res, result.rows[0], "User fetched successfully"));
   } catch (error) {
     console.error("Error fetching user:", error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json(errorResponse(res, error.message, 500));
   }
 };
 

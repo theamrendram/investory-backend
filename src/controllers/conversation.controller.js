@@ -1,10 +1,13 @@
 const pool = require("../utils/db");
 const { generate } = require("../services/assistant");
+const { successResponse, errorResponse } = require("../utils/response");
 const fetchPreviousMessages = async (req, res) => {
   const { session_token } = req.params;
   console.log("session_token", session_token);
   if (!session_token) {
-    return res.status(400).json({ error: "Session token is required" });
+    return res
+      .status(400)
+      .json(errorResponse(res, "Session token is required", 400));
   }
 
   const query = `
@@ -16,10 +19,18 @@ const fetchPreviousMessages = async (req, res) => {
 
   try {
     const result = await pool.query(query, [session_token]);
-    res.status(200).json(result.rows);
+    res
+      .status(200)
+      .json(
+        successResponse(
+          res,
+          result.rows,
+          "Previous messages fetched successfully"
+        )
+      );
   } catch (error) {
     console.error("Error fetching previous messages:", error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json(errorResponse(res, error.message, 500));
   }
 };
 
@@ -52,7 +63,9 @@ const sendResponse = async (req, res) => {
 
   // Validate messages array
   if (!Array.isArray(messages) || messages.length === 0) {
-    return res.status(400).json({ error: "Messages are required" });
+    return res
+      .status(400)
+      .json(errorResponse(res, "Messages are required", 400));
   }
 
   console.log("Received full messages:", messages);
@@ -100,13 +113,12 @@ const sendResponse = async (req, res) => {
     ]);
 
     // Step 5: Send Reply Back
-    res.status(200).json({
-      message: "Message processed successfully",
-      ai_response: aiReply,
-    });
+    res
+      .status(200)
+      .json(successResponse(res, aiReply, "Message processed successfully"));
   } catch (error) {
     console.error("Error sending response:", error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json(errorResponse(res, error.message, 500));
   }
 };
 

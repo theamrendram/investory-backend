@@ -1,5 +1,6 @@
 const { get } = require("../routes/user.route");
 const pool = require("../utils/db");
+const { successResponse, errorResponse } = require("../utils/response");
 
 const createStockTables = async () => {
   const createQuery = `
@@ -67,10 +68,7 @@ const addStock = async (req, res) => {
   try {
     const existingStock = await pool.query(existingStockQuery, [stock_name]);
     if (existingStockQuery.rows.length > 0) {
-      return res.status(200).json({
-        message: "Stock already exists",
-        data: existingStockQuery.rows[0],
-      });
+      return res.status(200).json(successResponse(res, existingStockQuery.rows[0], "Stock already exists"));
     }
     const result = await pool.query(insertStockQuery, [
       stock_name,
@@ -88,16 +86,14 @@ const addStock = async (req, res) => {
       dividend_yield,
     ]);
     if (result.rows.length === 0) {
-      return res.status(500).json({
-        error: "Failed to create stock",
-      });
+      return res.status(500).json(errorResponse(res, "Failed to create stock", 500));
     }
 
     console.log("Stock created:", result.rows[0]);
-    res.status(201).json(result.rows[0]);
+    res.status(201).json(successResponse(res, result.rows[0], "Stock created successfully"));
   } catch (error) {
     console.error("Error adding stock:", error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json(errorResponse(res, error.message, 500));
   }
 };
 
@@ -107,10 +103,10 @@ const getAllStock = async (req, res) => {
   console.log("r", r);
   try {
     const result = await pool.query(query);
-    res.status(200).json(result.rows);
+    res.status(200).json(successResponse(res, result.rows, "Stocks fetched successfully"));
   } catch (error) {
     console.error("Error fetching stocks:", error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json(errorResponse(res, error.message, 500));
   }
 };
 
@@ -120,12 +116,12 @@ const getStockById = async (req, res) => {
   try {
     const result = await pool.query(query, [id]);
     if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Stock not found" });
+      return res.status(404).json(errorResponse(res, "Stock not found", 404));
     }
-    res.status(200).json(result.rows[0]);
+    res.status(200).json(successResponse(res, result.rows[0], "Stock fetched successfully"));
   } catch (error) {
     console.error("Error fetching stock:", error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json(errorResponse(res, error.message, 500));
   }
 };
 
@@ -135,14 +131,12 @@ const getStockByInstrumentId = async (req, res) => {
   try {
     const result = await pool.query(query, [stock_id]);
     if (result.rows.length === 0) {
-      return res
-        .status(404)
-        .json({ error: "Stock not found for the given instrument id" });
+      return res.status(404).json(errorResponse(res, "Stock not found for the given instrument id", 404));
     }
-    res.status(200).json(result.rows[0]);
+    res.status(200).json(successResponse(res, result.rows[0], "Stock fetched successfully"));
   } catch (error) {
     console.error("Error fetching stock:", error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json(errorResponse(res, error.message, 500));
   }
 };
 
