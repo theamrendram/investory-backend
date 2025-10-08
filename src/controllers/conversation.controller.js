@@ -60,7 +60,6 @@ const createConversationsTable = async () => {
 const sendResponse = async (req, res) => {
   const { user_id, session_token, messages, stock_context, memory_context } =
     req.body;
-
   // Validate messages array
   if (!Array.isArray(messages) || messages.length === 0) {
     return res
