@@ -3,7 +3,6 @@ const { generate } = require("../services/assistant");
 const { successResponse, errorResponse } = require("../utils/response");
 const fetchPreviousMessages = async (req, res) => {
   const { session_token } = req.params;
-  console.log("session_token", session_token);
   if (!session_token) {
     return res
       .status(400)
@@ -67,10 +66,10 @@ const sendResponse = async (req, res) => {
       .json(errorResponse(res, "Messages are required", 400));
   }
 
-  console.log("Received full messages:", messages);
-
   try {
     // Step 1: Send full history to Gemini
+    console.log("messages", messages);
+    
     const response = await generate(messages);
 
     const aiReply =

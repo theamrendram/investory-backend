@@ -140,12 +140,10 @@ const getStockByInstrumentId = async (req, res) => {
   }
 };
 
-createStockTables();
 
 module.exports = {
   addStock,
   getStockById,
   getStockByInstrumentId,
   getAllStock,
-  createStockTables,
 };

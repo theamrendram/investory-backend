@@ -10,7 +10,7 @@ setupRealtimeFeed(server)
     app.set("io", io); // Optional: if you need to use `io` in routes
   })
   .catch((err) => {
-    console.error("Realtime feed failed:", err);
+    console.error("Realtime feed failed:");
   });
 
 

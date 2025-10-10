@@ -2,7 +2,7 @@ const {addStock,
     getStockById,
     getStockByInstrumentId,
     getAllStock,
-    createStockTables,} = require("../controllers/stocks.controller");
+    } = require("../controllers/stocks.controller");
 const router = require("express").Router();
 
 router.post("/", addStock);
