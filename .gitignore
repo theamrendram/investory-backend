@@ -4,4 +4,6 @@ node_modules
 .vercel
 .upstox_token.json
 
+.DS_Store
+
 src/utils/firebase/firebase-admin.json
