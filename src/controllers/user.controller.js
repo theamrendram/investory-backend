@@ -10,6 +10,8 @@ const createUsersTable = async () => {
       email VARCHAR(100) UNIQUE NOT NULL,
       phone VARCHAR(20),
       amount DECIMAL(10, 4) DEFAULT 10000.0000,
+      currentLevel SMALLINT DEFAULT 1,
+      totalBalance DECIMAL(10, 2) DEFAULT 10000.00,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
@@ -39,18 +41,28 @@ const addUser = async (req, res) => {
     );
     if (user.rows.length > 0) {
       const userData = user.rows[0];
-      return res.status(200).json(successResponse(res, userData, "User already exists"));
+      return res
+        .status(200)
+        .json(successResponse(res, userData, "User already exists"));
     }
 
-    const result = await pool.query(query, [name, email, phone, firebase_uid]);
+    const result = await pool.query(query, [
+      name,
+      email,
+      phone,
+      firebase_uid,
+    ]);
     if (result.rows.length === 0) {
-      return res.status(500).json(errorResponse(res, "Failed to create user", 500));
+      return res
+        .status(500)
+        .json(errorResponse(res, "Failed to create user", 500));
     }
     const userData = result.rows[0];
+    console.log("userData", userData);
     console.log("User created:", userData);
-    res.status(201).json(
-      successResponse(res, userData, "User created successfully")
-    );
+    res
+      .status(201)
+      .json(successResponse(res, userData, "User created successfully"));
   } catch (error) {
     console.error("Error adding user:", error);
     res.status(500).json(errorResponse(res, error.message, 500));
@@ -60,8 +72,6 @@ const addUser = async (req, res) => {
 // Function to get a user by ID
 const getUser = async (req, res) => {
   const { id } = req.params;
-  console.log("dsadsa");
-
   const r = await createUsersTable();
   console.log("r", r);
 
@@ -74,7 +84,9 @@ const getUser = async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(404).json(errorResponse(res, "User not found", 404));
     }
-    res.status(200).json(successResponse(res, result.rows[0], "User fetched successfully"));
+    res
+      .status(200)
+      .json(successResponse(res, result.rows[0], "User fetched successfully"));
   } catch (error) {
     console.error("Error fetching user:", error);
     res.status(500).json(errorResponse(res, error.message, 500));
